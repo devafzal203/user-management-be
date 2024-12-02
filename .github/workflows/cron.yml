@@ -1,0 +1,16 @@
+name: Clear Expired Tokens
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Token Cleanup
+        run: |
+          curl -X POST ${{ secrets.VERCEL_URL }}/api/cron/clear-tokens \
+          -H "x-api-key: ${{ secrets.X_API_KEY }}" \
+          -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
