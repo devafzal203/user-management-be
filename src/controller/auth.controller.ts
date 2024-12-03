@@ -41,7 +41,11 @@ export async function signup(req: Request, res: Response) {
       return;
     }
 
-    await trackUserActivity(user.id, "SIGN_UP", req.ip!, {
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
+    await trackUserActivity(user.id, "SIGN_UP", ip || req.ip!, {
       email: user.email,
       provider: "local",
     });
@@ -83,10 +87,6 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         });
       }
 
-      await trackUserActivity(user.id, "LOGIN", req.ip!, {
-        provider: "local",
-      });
-
       const accessToken = generateAccessToken(user.id);
       const refreshToken = generateRefreshToken(user.id);
 
@@ -97,6 +97,14 @@ export async function login(req: Request, res: Response, next: NextFunction) {
           userId: user.id,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
+      });
+
+      const { ip }: any = await fetch(
+        "https://api.ipify.org/?format=json"
+      ).then((res) => res.json());
+
+      await trackUserActivity(user.id, "LOGIN", ip || req.ip!, {
+        provider: "local",
       });
 
       // Return user data without sensitive information
@@ -198,7 +206,11 @@ export async function logout(req: Request, res: Response) {
       data: { isValid: false },
     });
 
-    await trackUserActivity(decoded.userId, "LOGOUT", req.ip!);
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
+    await trackUserActivity(decoded.userId, "LOGOUT", ip || req.ip!);
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error);
@@ -210,7 +222,11 @@ export async function googleCallback(req: Request, res: Response) {
   try {
     const user = req.user as any;
 
-    await trackUserActivity(user.id, "AUTH_WITH_GOOGLE", req.ip!, {
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
+    await trackUserActivity(user.id, "AUTH_WITH_GOOGLE", ip || req.ip!, {
       provider: "google",
     });
 

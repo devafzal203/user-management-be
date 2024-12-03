@@ -33,13 +33,27 @@ export async function getUserProfile(req: Request, res: Response) {
       },
     });
 
+    const data: any = await fetch("https://ip.guide/").then((res) =>
+      res.json()
+    );
+
+    const address = [
+      { header: "Country", item: data.location.country },
+      { header: "City/State", item: data.location.city },
+      { header: "Timezone", item: data.location.timezone },
+      {
+        header: "Organization",
+        item: data.network.autonomous_system.organization,
+      },
+    ];
+
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
     }
     res.status(200).json({
       ...user,
-      userId: user.id,
+      address,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch user data" });
@@ -72,8 +86,12 @@ export async function changePassword(req: Request, res: Response) {
       },
     });
 
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
     // Track activity
-    await trackUserActivity(userId, "PASSWORD_CHANGE", req.ip!);
+    await trackUserActivity(userId, "PASSWORD_CHANGE", ip || req.ip!);
 
     // Invalidate all refresh tokens for security
     await prisma.refreshToken.updateMany({
@@ -121,8 +139,12 @@ export async function changeName(req: Request, res: Response) {
       },
     });
 
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
     // Track activity
-    await trackUserActivity(userId, "NAME_UPDATE", req.ip!, {
+    await trackUserActivity(userId, "NAME_UPDATE", ip || req.ip!, {
       newName: newName.trim(),
     });
 
@@ -165,7 +187,11 @@ export async function changeAvatar(req: Request, res: Response) {
       },
     });
 
-    await trackUserActivity(userId, "AVATAR_UPDATE", req.ip!, {
+    const { ip }: any = await fetch("https://api.ipify.org/?format=json").then(
+      (res) => res.json()
+    );
+
+    await trackUserActivity(userId, "AVATAR_UPDATE", ip || req.ip!, {
       avatarUrl: req.file.path,
     });
 

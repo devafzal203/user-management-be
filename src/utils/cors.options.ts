@@ -1,6 +1,6 @@
 const whitelist = [
   "http://localhost:5173",
-  "https://frontend-spark-cloud-assignment.vercel.app",
+  "https://user-managent-app.vercel.app",
   process.env.FRONTEND_URL,
 ];
 
