@@ -35,11 +35,6 @@ A simple user management backend application that handles user authentication, p
 - **Password hashing**: Passwords are hashed using industry-standard algorithms like **bcrypt** to ensure security.
 - Secure authentication tokens (JWT or session-based) are used to maintain authenticated sessions.
 
-#### 6. **API Documentation**
-
-- The backend provides a set of API endpoints for interaction and integration with frontend applications.
-- Detailed API documentation is available to guide users through available operations.
-
 ## Tech Stack
 
 - **Backend Framework**: Node.js & Express
@@ -47,6 +42,11 @@ A simple user management backend application that handles user authentication, p
 - **Authentication**: JWT/Session-based Authentication
 - **Password Hashing**: bcrypt
 - **File Storage**: Cloudinary for storing user profile pictures.
+
+## Deployment
+
+- The application is deployed on [Vercel](https://vercel.com/).
+- Deployed URL: [https://user-management-be.vercel.app/](https://user-management-be.vercel.app/)
 
 ## Prerequisites
 
